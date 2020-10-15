@@ -30,7 +30,7 @@ WaitRasterLine:
 	ret
 RastererWait: 
 	push bc 
-	ld e,190 : ld a,$1f : ld bc,$243b : out (c),a : inc b 
+	ld e,16 : ld a,$1f : ld bc,$243b : out (c),a : inc b 
 WaitForLinea: 
 	in a,(c) : cp e : jr nz,WaitForLinea 
 	pop bc 

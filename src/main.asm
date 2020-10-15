@@ -3,6 +3,7 @@
     DEVICE ZXSPECTRUMNEXT
 	
 start:
+	nextreg $7,3 ; set Mhz mode
 	call game_start	
 	jp main_loop
 

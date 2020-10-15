@@ -2,13 +2,13 @@ MAP_ADDRESS equ 0xC000
 CAM_SCROLL_SPEED equ 32
 VIEWPORT_WIDTH equ 40
 VIEWPORT_HEIGHT equ 32
-WORLD_WIDTH equ 80
+WORLD_WIDTH equ 80 ;fix it , the code breaks when this is not 80
 WORLD_HEIGHT equ 64
 
-TILESET_SIZE equ 1984 ;1024*6
+TILESET_SIZE equ 1984 
 
-camera_x dw 0
-camera_y dw 0x0100
+camera_x dw 0x0000
+camera_y dw 0x0000
 
 
 init_tiles:

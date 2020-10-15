@@ -41,6 +41,12 @@ player_update:
 	cp ANIMATION_FRAME_TIME
 	call nc, animate_player
 
+
+	ld hl,(px)
+	ld (prev_x),hl
+	ld hl,(py)
+	ld (prev_y),hl
+
 	ld a,(keypressed_A)
 	cp TRUE
 	call z,move_left
@@ -58,10 +64,7 @@ player_update:
 	call z, move_down
 
 
-	ld hl,(px)
-	ld (prev_x),hl
-	ld hl,(py)
-	ld (prev_y),hl
+	
 
 	
     ret

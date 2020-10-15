@@ -1,42 +1,36 @@
-npc_x dw 128
-npc_y dw 128
+npc_screen_x dw 0x0020
+npc_screen_y dw 0x0020
 
-NPC_ATTR_SLOT equ 61
+npc_world_x db 12    
+npc_world_y db 59
+
+NPC_ATTR_SLOT equ 30
 npc_attribute_2 db %00000000
-npc_attribute_3 db %11000000
+npc_attribute_3 db %11000001
 npc_attribute_4 db %00100000
 
-
-
-npc_current_type db NOT_ENABLED
-NPC_MARGE equ 12
-NPC_HOMER equ 13
 
 npc_animation_counter db 0
 NPC_ANIMATION_FRAME_TIME equ 12
 
+npc_is_showing db FALSE
+
 
 ;before calling this, set 'npc_current_type' to desired NPC type
 npc_start:
-	ld a,NPC_MARGE
-	add a,VISIBILITY
-	ld (npc_attribute_3),a
-	ld a,(npc_current_type)
-	cp NPC_MARGE
-	ret z
-
-	ld a,NPC_HOMER
-	add a,VISIBILITY
-	ld (npc_attribute_3),a
-	ld a,(npc_current_type)
-	cp NPC_HOMER
-	ret z
-
 
 
 	ret
 
 npc_update:
+	call npc_check_inview
+
+	
+
+	ld a,(npc_is_showing)
+	cp TRUE
+	ret nz
+
 	ld a,(npc_animation_counter)
 	inc a
 	ld (npc_animation_counter),a
@@ -55,17 +49,17 @@ npc_draw:
 
 	ld bc, $57 ;0x57=attribute writing port
 	;attr 0
-	ld a,(npc_x)
+	ld a,(npc_screen_x)
 	out (c), a    
 
 	;attr 1                                  
-	ld a,(npc_y)
+	ld a,(npc_screen_y)
 	out (c), a                                      
 
 	;attr 2
 	ld a,(npc_attribute_2)
 	ld b,a
-	ld hl,npc_x
+	ld hl,npc_screen_x
 	inc hl
 	ld a,(hl)
 	or b
@@ -106,12 +100,12 @@ npc_collide_player:
 
 	ld a,(px)
 	ld b,a
-	ld a,(npc_x)
+	ld a,(npc_screen_x)
 	add a,16 ;width
 	cp b
 	ret c
 
-	ld a,(npc_x)
+	ld a,(npc_screen_x)
 	ld b,a
 	ld a,(px)
 	add a,16 ;w
@@ -120,19 +114,19 @@ npc_collide_player:
 
 	ld a,(py)
 	ld b,a
-	ld a,(npc_y)
+	ld a,(npc_screen_y)
 	add a,20 ;h + offset (standing in front of npc)
 	cp b
 	ret c
 
-	ld a,(npc_y)
+	ld a,(npc_screen_y)
 	ld b,a
 	ld a,(py)
 	add a,16
 	cp b
 	ret c
 
-	ld hl,npc_x
+	ld hl,npc_screen_x
 	inc hl
 	ld b,(hl)
 	ld hl,px
@@ -141,7 +135,7 @@ npc_collide_player:
 	cp b
 	ret nz
 
-	ld hl,npc_y
+	ld hl,npc_screen_y
 	inc hl
 	ld b,(hl)
 	ld hl,py
@@ -152,9 +146,93 @@ npc_collide_player:
 
 
 	;collision....
-	ld a,5
-	call 0x229b
+	call collided_solid
+	
+
+	ret
+;
+
+
+
+
+npc_check_inview:
+
+	;missed viewport by left side
+	ld hl,(camera_x) 
+	ld b,h 
+	ld a,(npc_world_x)
+	cp b
+	jp c, npc_set_notshowing
+
+	;missed on right side
+	ld a,(npc_world_x)
+	ld b,a
+	ld hl,(camera_x)
+	ld a,h
+	add a,VIEWPORT_WIDTH-2
+	cp b
+	jp c, npc_set_notshowing
+
+	;missed on top side
+	ld hl,(camera_y)
+	ld b,h
+	ld a,(npc_world_y)
+	cp b
+	jp c, npc_set_notshowing
+
+	;missed on bottom side
+	ld a,(npc_world_y)
+	ld b,a
+	ld hl,(camera_y)
+	ld a,h
+	add a,VIEWPORT_HEIGHT-2
+	cp b
+	jp c, npc_set_notshowing
 
 	
+	ld a,TRUE
+	ld (npc_is_showing),a
+	;set correct screenspace position...
+	call calculate_screenspace_position
+	ld a,(npc_attribute_3)
+	set 7,a
+	ld (npc_attribute_3),a
+	
+	ret
+
+npc_set_notshowing:
+	ld a,FALSE
+	ld (npc_is_showing),a
+
+	;reset visibility bit
+	ld a,(npc_attribute_3)
+	res 7,a
+	ld (npc_attribute_3),a
+
+	ret
+
+calculate_screenspace_position:
+	ld hl,(camera_x)
+	ld b,h
+	ld a,(npc_world_x)
+	sub b
+	add a,a
+	add a,a
+	add a,a
+	ld h,0
+	ld l,a
+	ld (npc_screen_x),hl
+
+	; BREAKPOINT
+	ld hl,(camera_y)
+	ld b,h
+	ld a,(npc_world_y)
+	sub b
+	add a,a
+	add a,a
+	add a,a
+	ld h,0
+	ld l,a
+	ld (npc_screen_y),hl
 
 	ret
