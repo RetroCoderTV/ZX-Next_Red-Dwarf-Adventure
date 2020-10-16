@@ -17,11 +17,14 @@ player_attribute_4 db %00100000
 
 
 player_type db %10000000 ;type= VISIBILITY BYTE + IMAGE ID
-player_hp db 0
+player_hp db 100
 player_mp db 0
 player_xp db 0
 player_lvl db 0
-player_money db 0
+
+
+;lager,bazookoid,popadom,fish,locker key,banana,something else,one more
+player_inventory db %00001100
 
 
 animation_counter db 0
@@ -29,12 +32,29 @@ ANIMATION_FRAME_TIME equ 12
 
 
 
+PLAYER_FIGHT_POS_X equ 230
+PLAYER_FIGHT_POS_Y_1 equ 100
 
-player_start:
 
-	ret
+
 
 player_update:
+	ld a,(screen_manager_current_state)
+	cp SCREEN_LEVEL
+	push af
+	call z,player_update_level
+	pop af
+	push af
+	call z,player_update_fight
+	pop af
+	; push af
+	; call z,player_update_inventory
+	; pop af
+	ret
+
+
+
+player_update_level:
 	ld a,(animation_counter)
 	inc a
 	ld (animation_counter),a
@@ -63,11 +83,20 @@ player_update:
 	cp TRUE
 	call z, move_down
 
-
-	
-
-	
     ret
+
+
+player_start_fight:
+	; BREAKPOINT
+	ld hl,px
+	ld (hl),PLAYER_FIGHT_POS_X
+	ld hl,py
+	ld (hl),PLAYER_FIGHT_POS_Y_1
+	ret
+
+player_update_fight:
+	call display_fight_scene
+	ret
 
 player_draw:
 	;select slot

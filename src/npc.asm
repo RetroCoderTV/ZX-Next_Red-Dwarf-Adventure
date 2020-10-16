@@ -1,8 +1,8 @@
 npc_screen_x dw 0x0020
 npc_screen_y dw 0x0020
 
-npc_world_x db 12    
-npc_world_y db 59
+npc_world_x db 1    
+npc_world_y db 14
 
 NPC_ATTR_SLOT equ 30
 npc_attribute_2 db %00000000
@@ -16,13 +16,36 @@ NPC_ANIMATION_FRAME_TIME equ 12
 npc_is_showing db FALSE
 
 
+NPC_FIGHT_X equ 60
+NPC_FIGHT_Y equ 100
+
+
 ;before calling this, set 'npc_current_type' to desired NPC type
 npc_start:
 
 
 	ret
 
+npc_start_fight:
+	ld hl,npc_screen_x
+	ld (hl),NPC_FIGHT_X
+	ld hl,npc_screen_y
+	ld (hl),NPC_FIGHT_Y
+	ret
+
 npc_update:
+	ld a,(screen_manager_current_state)
+	cp SCREEN_LEVEL
+	push af
+	call z,npc_update_level
+	pop af
+	push af
+	call z,npc_update_fight
+	pop af
+	ret
+
+
+npc_update_level:
 	call npc_check_inview
 
 	
@@ -40,6 +63,12 @@ npc_update:
 	call npc_collide_player
 
     ret
+
+
+npc_update_fight:
+
+
+	ret
 
 npc_draw:
 	;select slot
@@ -146,7 +175,7 @@ npc_collide_player:
 
 
 	;collision....
-	call collided_solid
+	call start_fight
 	
 
 	ret
