@@ -6,9 +6,9 @@ game_start:
 
 	nextreg $15,%00000011
 	call init_tiles
+	call npcs_init
 
 
-	call npc_start
 	; call display_dialog_text
 	
     ret
@@ -18,7 +18,7 @@ game_update:
 	call WaitRasterLine
   	
     call check_keys
-	call npc_update
+	call npcs_update
 	call player_update
 	
 
@@ -26,7 +26,8 @@ game_update:
 
 game_draw:
 	call player_draw
-	call npc_draw
+	call npcs_draw
+
     
 	ret
 

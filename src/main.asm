@@ -3,6 +3,7 @@
     DEVICE ZXSPECTRUMNEXT
 	
 start:
+	di
 	nextreg $7,3 ; set Mhz mode
 	call game_start	
 	jp main_loop
@@ -24,6 +25,7 @@ stack_top db 0
 	include 'dialog.asm'
 	include 'retrotools\keycacher.asm'
 	include 'retrotools\spritetools.asm'
+	; include 'collectables.asm'
 	include 'tiledworld.asm'
 	include 'sprites.asm'
 
