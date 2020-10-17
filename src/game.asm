@@ -1,4 +1,8 @@
 game_start: 
+
+	
+
+
 	nextreg $56, 14
 	ld b,SPRITE_COUNT
     ld hl,MAP_ADDRESS
@@ -8,8 +12,9 @@ game_start:
 	call init_tiles
 	call npcs_init
 
+	
 
-	; call display_dialog_text
+	
 	
     ret
 

@@ -1,5 +1,5 @@
-py dw 128
-px dw 128 
+py dw 150
+px dw 152 
 
 prev_y dw 128
 prev_x dw 128
@@ -61,7 +61,6 @@ player_update_level:
 	cp ANIMATION_FRAME_TIME
 	call nc, animate_player
 
-
 	ld hl,(px)
 	ld (prev_x),hl
 	ld hl,(py)
@@ -87,11 +86,15 @@ player_update_level:
 
 
 player_start_fight:
-	; BREAKPOINT
-	ld hl,px
-	ld (hl),PLAYER_FIGHT_POS_X
-	ld hl,py
-	ld (hl),PLAYER_FIGHT_POS_Y_1
+	;todo: remember if X8 msb is set or not?
+
+	ld hl,PLAYER_FIGHT_POS_X
+	ld (px),hl
+	ld hl,PLAYER_FIGHT_POS_Y_1
+	ld (py),hl
+
+	; call ui_fight_init
+
 	ret
 
 player_update_fight:

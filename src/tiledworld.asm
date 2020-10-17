@@ -38,10 +38,9 @@ init_tiles:
 
 	ld a,4 ;magenta
 	nextreg $4c,a ;set tilemap transparency colour
-	ld a,7
-	nextreg $14,a ;set global transparency colour
-	xor a 
 	
+	xor a 
+	nextreg $14,a ;set global transparency colour
 	nextreg $30,a ;tile x offset =0
 	nextreg $31,a ;tile y offset
 
@@ -210,6 +209,7 @@ clr_view:
 
 
 start_fight:
+
 	ld a,(screen_manager_current_state)
 	cp SCREEN_FIGHT
 	ret z
@@ -221,8 +221,10 @@ start_fight:
 	call tiledworld_draw_view_fight
 
 	; nextreg $6b,%00100000 ;disable tilemap
+	
 	call player_start_fight
 	call npc_start_fight
+
 
 	ret
 

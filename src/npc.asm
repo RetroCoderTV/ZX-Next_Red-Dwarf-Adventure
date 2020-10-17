@@ -1,12 +1,3 @@
-; npc_screen_x dw 0x0020
-; npc_screen_y dw 0x0020
-; npc_world_x db 10    
-; npc_world_y db 45
-; NPC_ATTR_SLOT equ 62
-; npc_attribute_2 db %00000000
-; npc_attribute_3 db %11000001
-; npc_attribute_4 db %00100000
-; npc_animation_counter db 0
 NPC_ANIMATION_FRAME_TIME equ 12
 ; npc_is_showing db FALSE
 NPC_FIGHT_X equ 60
@@ -26,25 +17,10 @@ NPC_FIGHT_Y equ 100
 ;11=animation counter
 npcs:
 	db 00,10 : dw 0,0 : db 62, %00000000, %11000001, %00100000, FALSE, 0
-	db 02,08 : dw 0,0 : db 61, %00000000, %11000001, %00100000, FALSE, 0
-	db 04,10 : dw 0,0 : db 60, %00000000, %11000001, %00100000, FALSE, 0
-	db 06,08 : dw 0,0 : db 59, %00000000, %11000001, %00100000, FALSE, 0
-	db 08,10 : dw 0,0 : db 58, %00000000, %11000001, %00100000, FALSE, 0
-	db 10,08 : dw 0,0 : db 57, %00000000, %11000001, %00100000, FALSE, 0
-	db 12,10 : dw 0,0 : db 56, %00000000, %11000001, %00100000, FALSE, 0
-	db 14,08 : dw 0,0 : db 55, %00000000, %11000001, %00100000, FALSE, 0
-	db 16,10 : dw 0,0 : db 54, %00000000, %11000001, %00100000, FALSE, 0
-	db 18,08 : dw 0,0 : db 53, %00000000, %11000001, %00100000, FALSE, 0
-	db 20,10 : dw 0,0 : db 52, %00000000, %11000001, %00100000, FALSE, 0
-	db 22,08 : dw 0,0 : db 51, %00000000, %11000001, %00100000, FALSE, 0
-	db 24,10 : dw 0,0 : db 50, %00000000, %11000001, %00100000, FALSE, 0
-	db 26,08 : dw 0,0 : db 49, %00000000, %11000001, %00100000, FALSE, 0
-	db 28,10 : dw 0,0 : db 48, %00000000, %11000001, %00100000, FALSE, 0
-	db 00,14 : dw 0,0 : db 47, %00000000, %11000001, %00100000, FALSE, 0
-	db 02,12 : dw 0,0 : db 46, %00000000, %11000001, %00100000, FALSE, 0
-	db 04,14 : dw 0,0 : db 45, %00000000, %11000001, %00100000, FALSE, 0
-	db 06,12 : dw 0,0 : db 44, %00000000, %11000001, %00100000, FALSE, 0
-	db 08,14 : dw 0,0 : db 43, %00000000, %11000001, %00100000, FALSE, 0
+	db 42,08 : dw 0,0 : db 61, %00000000, %11000001, %00100000, FALSE, 0
+	db 44,40 : dw 0,0 : db 60, %00000000, %11000001, %00100000, FALSE, 0
+	db 03,40 : dw 0,0 : db 59, %00000000, %11000001, %00100000, FALSE, 0
+
 	db 255
 NPCS_DATA_LENGTH equ 12
 
@@ -100,7 +76,10 @@ npc_init:
 
 ;IX=current npc
 npc_start_fight:
-	ld (ix+3),NPC_FIGHT_X
+	;todo: make all npc sprites not visible
+	;todo: make this npc visible
+	ld (ix+2),NPC_FIGHT_X
+	ld (ix+3),0
 	ld (ix+4),NPC_FIGHT_Y
 	ret
 
@@ -189,17 +168,14 @@ flip_npc_sprite:
 
 
 npc_collide_player:
-	xor a
-	call 0x229b
-
 	ld a,(px)
 	ld b,a
-	ld a,(ix+3)
+	ld a,(ix+2)
 	add a,16 ;width
 	cp b
 	ret c
 
-	ld a,(ix+3)
+	ld a,(ix+2)
 	ld b,a
 	ld a,(px)
 	add a,16 ;w
@@ -220,7 +196,7 @@ npc_collide_player:
 	cp b
 	ret c
 
-	ld a,(ix+2)
+	ld a,(ix+3)
 	ld b,a
 	ld hl,px
 	inc hl
@@ -305,18 +281,6 @@ npc_set_notshowing:
 
 ;INPUTS: IX= object to position
 calculate_screenspace_position:
-	ld hl,(camera_x)
-	ld b,h
-	ld a,(ix+0)
-	sub b
-	add a,a
-	add a,a
-	add a,a
-	ld h,0
-	ld l,a
-	ld (ix+2),hl
-
-
 	ld hl,(camera_y)
 	ld b,h
 	ld a,(ix+1)
@@ -328,4 +292,18 @@ calculate_screenspace_position:
 	ld l,a
 	ld (ix+4),hl
 
+	ld hl,(camera_x)
+	ld b,h
+	ld a,(ix+0)
+	sub b
+	ld l,a
+	ld h,0
+	add hl,hl
+	add hl,hl
+	add hl,hl
+	ld (ix+2),hl
+
+	
+
 	ret
+

@@ -17,6 +17,7 @@ STACK_SIZE equ 20
 stack_bottom ds STACK_SIZE, 0
 stack_top db 0  
 
+	
 	include 'retrotools\tools.asm'
 	include 'constants.asm'
 	include 'game.asm'
@@ -28,10 +29,10 @@ stack_top db 0
 	; include 'collectables.asm'
 	include 'tiledworld.asm'
 	include 'sprites.asm'
-
+	include 'ui.asm'
 
 	MMU 6,17
-	org 0xE000
+	org 0xC000
 	incbin "fonts/font7.spr"
 
 
