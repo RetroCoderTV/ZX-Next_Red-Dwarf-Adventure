@@ -145,13 +145,13 @@ uiget_start:
     jp nz, uiget_next
 
     ;this is the correct enemy:
-    ld a,(ix+11)
-    ld (ui_enemy_hp),a
     ld a,(ix+12)
-    ld (ui_enemy_mp),a
+    ld (ui_enemy_hp),a
     ld a,(ix+13)
-    ld (ui_enemy_xp),a
+    ld (ui_enemy_mp),a
     ld a,(ix+14)
+    ld (ui_enemy_xp),a
+    ld a,(ix+15)
     ld (ui_enemy_lvl),a
     ret
 uiget_next:

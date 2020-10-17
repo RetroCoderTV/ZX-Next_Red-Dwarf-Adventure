@@ -15,10 +15,10 @@ NPC_FIGHT_Y equ 100
 ;9=attr 4
 ;10=is showing
 ;11=animation counter
-;11=hp
-;12=mp
-;13=xp
-;14=lvl
+;12=hp
+;13=mp
+;14=xp
+;15=lvl
 
 npcs:
 	db 00,10 : dw 0,0 : db 62, %00000000, %11000001, %00100000, FALSE, 0,30,0,10,5
