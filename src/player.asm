@@ -17,7 +17,7 @@ player_attribute_4 db %00100000
 
 
 player_type db %10000000 ;type= VISIBILITY BYTE + IMAGE ID
-player_hp db 100
+player_hp db 126
 player_mp db 0
 player_xp db 0
 player_lvl db 0
@@ -92,8 +92,6 @@ player_start_fight:
 	ld (px),hl
 	ld hl,PLAYER_FIGHT_POS_Y_1
 	ld (py),hl
-
-	; call ui_fight_init
 
 	ret
 

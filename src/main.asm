@@ -27,13 +27,15 @@ stack_top db 0
 	include 'retrotools\keycacher.asm'
 	include 'retrotools\spritetools.asm'
 	; include 'collectables.asm'
+	include 'ui.asm'
+
 	include 'tiledworld.asm'
 	include 'sprites.asm'
-	include 'ui.asm'
+	
 
 	MMU 6,17
 	org 0xC000
-	incbin "fonts/font7.spr"
+	incbin "fonts/font1.spr"
 
 
 

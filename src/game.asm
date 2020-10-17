@@ -25,7 +25,7 @@ game_update:
     call check_keys
 	call npcs_update
 	call player_update
-	
+	call ui_update
 
 	ret
 
