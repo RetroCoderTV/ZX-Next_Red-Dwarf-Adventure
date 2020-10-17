@@ -20,7 +20,7 @@ player_type db %10000000 ;type= VISIBILITY BYTE + IMAGE ID
 player_hp db 126
 player_mp db 0
 player_xp db 0
-player_lvl db 0
+player_lvl db 1
 
 
 ;lager,bazookoid,popadom,fish,locker key,banana,something else,one more

@@ -15,14 +15,18 @@ NPC_FIGHT_Y equ 100
 ;9=attr 4
 ;10=is showing
 ;11=animation counter
-npcs:
-	db 00,10 : dw 0,0 : db 62, %00000000, %11000001, %00100000, FALSE, 0
-	db 42,08 : dw 0,0 : db 61, %00000000, %11000001, %00100000, FALSE, 0
-	db 44,40 : dw 0,0 : db 60, %00000000, %11000001, %00100000, FALSE, 0
-	db 03,40 : dw 0,0 : db 59, %00000000, %11000001, %00100000, FALSE, 0
+;11=hp
+;12=mp
+;13=xp
+;14=lvl
 
+npcs:
+	db 00,10 : dw 0,0 : db 62, %00000000, %11000001, %00100000, FALSE, 0,30,0,10,5
+	db 42,08 : dw 0,0 : db 61, %00000000, %11000001, %00100000, FALSE, 0,250,100,100,14
+	db 44,44 : dw 0,0 : db 60, %00000000, %11000001, %00100000, FALSE, 0,180,250,55,75
+	db 03,40 : dw 0,0 : db 59, %00000000, %11000001, %00100000, FALSE, 0,45,10,1,1
 	db 255
-NPCS_DATA_LENGTH equ 12
+NPCS_DATA_LENGTH equ 16
 
 
 npcs_init:
@@ -78,6 +82,8 @@ npc_init:
 npc_start_fight:
 	;todo: make all npc sprites not visible
 	;todo: make this npc visible
+	ld a,(ix+6)
+	ld (current_fight_enemy),a ;save this enemy slot, to see which one we are fighting
 	ld (ix+2),NPC_FIGHT_X
 	ld (ix+3),0
 	ld (ix+4),NPC_FIGHT_Y
@@ -112,7 +118,9 @@ npc_update_level:
 
 
 npc_update_fight:
-
+	ld a,(current_fight_enemy)
+	cp (ix+6)
+	ret z
 
 	ret
 

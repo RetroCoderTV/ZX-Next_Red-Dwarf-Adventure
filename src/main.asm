@@ -35,7 +35,24 @@ stack_top db 0
 
 	MMU 6,17
 	org 0xC000
-	incbin "fonts/font1.spr"
+	; incbin "fonts/font1.spr"
+	; incbin "fonts/font2.spr"
+	; incbin "fonts/font3.spr"
+	; incbin "fonts/font4.spr"
+	; incbin "fonts/font5.spr"
+	; incbin "fonts/font6.spr"
+	incbin "fonts/font7.spr"
+	; incbin "fonts/font8.spr"
+	; incbin "fonts/font9.spr"
+	; incbin "fonts/font10.spr"
+	; incbin "fonts/font11.spr"
+	; incbin "fonts/font12.spr"
+	; incbin "fonts/font13.spr"
+	; incbin "fonts/font14.spr"
+	; incbin "fonts/font15.spr"
+	; incbin "fonts/font16.spr"
+	; ; incbin "fonts/font17.spr"
+	; incbin "fonts/font18.spr" *not mapped same as others (?)
 
 
 

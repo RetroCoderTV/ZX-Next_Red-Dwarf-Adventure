@@ -18,6 +18,9 @@ SCREEN_INVENTORY equ 2
 screen_manager_current_state db SCREEN_LEVEL
 
 
+current_fight_enemy db 0
+
+
 init_tiles:
 	;load palette
 	call set_palette
