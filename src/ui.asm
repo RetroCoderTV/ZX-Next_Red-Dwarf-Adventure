@@ -42,7 +42,7 @@ ui_fight_init:
 
     ld l,UI_HP_Y+1
     ld h,UI_HP_Y
-    ld a,122
+    ld a,(player_hp)
     call display_numbers
  
     ret
