@@ -24,12 +24,12 @@ ui_label_mp db 'MP:',0
 ui_label_xp db 'XP:',0
 ui_label_lvl db 'LV:',0
 ui_selector db '*',0
-ui_space db " ",0
+ui_space db ' ',0
 
 
 
 
-ui_selector_x db UI_FIGHT_BUTTONS_X-1
+ui_selector_x db 18
 ui_selector_y db UI_FIGHT_BUTTONS_Y
 
 
@@ -67,10 +67,9 @@ ui_fight_init:
     ld a,TRUE
     ld (ui_fight_init_done),a
 
-      ;set slot, page
-
     ;Top half
     call ui_draw_selector
+    ; call ui_delete_selector
 
     ld l,UI_FIGHT_BUTTONS_X
     ld h,UI_FIGHT_BUTTONS_Y
@@ -195,10 +194,11 @@ ui_draw_selector:
     ret
 
 ui_delete_selector:
+
     ld hl,(ui_selector_x)
     ld de,ui_space
     call display_string
-    BREAKPOINT
+   
     ret
 
 
@@ -230,8 +230,6 @@ uiget_next:
 
 
 
-
-
 ui_fight_update:
     ld a,(keypressed_W)
     cp TRUE
@@ -240,27 +238,78 @@ ui_fight_update:
     ld a,(keypressed_S)
     cp TRUE
     call z,ui_move_selector_down
+
+    ld a,(keypressed_A)
+    cp TRUE
+    call z, ui_move_selector_left
+
+    ld a,(keypressed_D)
+    cp TRUE
+    call z, ui_move_selector_right
     ret
 
 
 
 ui_move_selector_up:
+    ld a,(keypressed_W_Held)
+    cp TRUE
+    ret z
+
     ld a,(ui_selector_y)
     cp UI_FIGHT_BUTTONS_Y
     ret z
     dec a
+    push af
     call ui_delete_selector
+    pop af
     ld (ui_selector_y),a
-
     call ui_draw_selector
     ret
 ui_move_selector_down:
+    ld a,(keypressed_S_Held)
+    cp TRUE
+    ret z
+
     ld a,(ui_selector_y)
-    cp UI_FIGHT_BUTTONS_Y+3 ;3 buttons max column height
+    cp UI_FIGHT_BUTTONS_Y+2 ;3 buttons max column height
     ret z
     inc a
+    push af
     call ui_delete_selector
+    pop af
     ld (ui_selector_y),a
+    call ui_draw_selector
+    ret
+
+ui_move_selector_left
+    ld a,(ui_selector_x)
+    cp UI_FIGHT_BUTTONS_X-1
+    ret z
+
+    call ui_delete_selector
+    ld a,UI_FIGHT_BUTTONS_X-1
+    ld (ui_selector_x),a
 
     call ui_draw_selector
     ret
+ui_move_selector_right
+    ld a,(ui_selector_x)
+    cp UI_FIGHT_BUTTONS_X+UI_BUTTON_WIDTH-1
+    ret z
+
+    call ui_delete_selector
+    ld a,UI_FIGHT_BUTTONS_X+UI_BUTTON_WIDTH-1
+    ld (ui_selector_x),a
+    call ui_draw_selector
+    ret
+
+; ui_move_selector_sideways:
+;     ld a,(ui_selector_x)
+;     xor 8
+;     push af
+;     call ui_delete_selector
+;     pop af
+;     ld (ui_selector_x),a
+
+;     call ui_draw_selector
+;     ret

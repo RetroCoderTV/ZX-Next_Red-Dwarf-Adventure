@@ -1,9 +1,12 @@
     org 0x8000
 
     DEVICE ZXSPECTRUMNEXT
-	
+	CSPECTMAP main.map
+
+
 start:
 	di
+	ld sp,0x7FFE
 	nextreg $7,3 ; set Mhz mode
 	call game_start	
 	jp main_loop
@@ -12,6 +15,9 @@ main_loop:
 	call game_update
 	call game_draw
 	jp main_loop
+
+
+
 
 STACK_SIZE equ 20
 stack_bottom ds STACK_SIZE, 0

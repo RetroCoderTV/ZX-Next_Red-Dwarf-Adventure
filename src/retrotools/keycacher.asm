@@ -15,9 +15,11 @@
 
 
 keypressed_W db FALSE
+keypressed_W_Held db FALSE
 keypressed_A db FALSE
 keypressed_A_Held db FALSE
 keypressed_S db FALSE
+keypressed_S_Held db FALSE
 keypressed_D db FALSE
 
 keypressed_F db FALSE
@@ -31,6 +33,16 @@ keypressed_Space db FALSE
 keypressed_Space_Held db FALSE
 
 check_keys:
+    ld a,(keypressed_W)
+    cp TRUE
+    call z,set_W_Held
+    call nz, reset_W_Held
+
+    ld a,(keypressed_S)
+    cp TRUE
+    call z,set_S_Held
+    call nz, reset_S_Held
+
     ld a,(keypressed_F)
     cp TRUE
     call z, set_F_Held
@@ -50,6 +62,8 @@ check_keys:
     cp TRUE
     call z,set_Space_Held
     call nz, reset_Space_Held
+
+
 
     xor a
     ld (keypressed_W),a
@@ -124,6 +138,15 @@ set_W:
     ld (keypressed_W),a
     ret
 
+set_W_Held:
+    ld a,TRUE
+    ld (keypressed_W_Held),a
+    ret
+reset_W_Held:
+    xor a
+    ld (keypressed_W_Held),a
+    ret
+
 set_A:
     ld a,TRUE
     ld (keypressed_A),a
@@ -142,6 +165,14 @@ reset_A_Held:
 set_S:
     ld a,TRUE
     ld (keypressed_S),a
+    ret
+set_S_Held:
+    ld a,TRUE
+    ld (keypressed_S_Held),a
+    ret
+reset_S_Held:
+    xor a
+    ld (keypressed_S_Held),a
     ret
 
 set_D:
