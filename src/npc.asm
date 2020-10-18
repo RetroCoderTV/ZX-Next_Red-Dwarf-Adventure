@@ -3,8 +3,6 @@ NPC_ANIMATION_FRAME_TIME equ 12
 NPC_FIGHT_X equ 60
 NPC_FIGHT_Y equ 100
 
-
-
 ;0=world x
 ;1=world y
 ;2,3=position x lh

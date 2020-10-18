@@ -55,6 +55,7 @@ LAYER2_ACCESS_PORT	EQU 	$123B
 		; in - a = number of tile to display
 		;----------------
 PlotTile8:
+		nextreg $56,17
 		ld d,64
 		ld e,a					; 11
 		mul					
@@ -98,6 +99,8 @@ PlotTile8:
 		inc d					; 4 add 256 for next line down
 		dec a					; 4
 		jr nz,.plotTilesLoop2			; 12/7
+
+		nextreg $56,14 ;$0e
 		ret 
 
 
@@ -105,18 +108,14 @@ PlotTile8:
 
 
 
-
-
-
-
-;HL=start x
+;HL=mem address start yx
 ;DE=message address
 display_string:
     ld a,(de)
     cp 0
     ret z
-    cp ' '
-    jp z,disp_char_next
+    ; cp ' '
+    ; jp z,disp_char_next
     sub FONT_ASCII_OFFSET
     push de
     push hl
@@ -128,9 +127,6 @@ disp_char_next:
     inc l
     jp display_string
    
-
-
-
 
 display_numbers:
     ld c,-100
@@ -152,7 +148,6 @@ dispnums_inc:
     pop hl
     inc l
     pop af
-
     ret
 
 

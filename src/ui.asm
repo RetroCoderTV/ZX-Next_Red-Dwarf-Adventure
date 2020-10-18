@@ -1,6 +1,8 @@
-FONT_START equ 13
 
+FONT_START equ 14
 
+UI_FIGHT_BUTTONS_X equ 19   
+UI_FIGHT_BUTTONS_Y equ 0
 UI_FIGHT_ENEMY_X equ 0  ;origin for the players text info
 UI_FIGHT_ENEMY_Y equ 21  ;origin for the players text info
 UI_FIGHT_PLAYER_X equ 17  ;origin for the players text info
@@ -8,12 +10,32 @@ UI_FIGHT_PLAYER_Y equ 21  ;origin for the players text info
 UI_LABELS_SPACING equ 4
 UI_LABELS_COLUMN_WIDTH equ 8
 UI_LABELS_ROW_HEIGHT equ 2
+UI_BUTTON_HEIGHT equ 1
+UI_BUTTON_WIDTH equ 8
+
+
+ui_label_button_attack db 'ATTACK',0
+ui_label_button_run db 'RUN',0
+ui_label_button_item db 'ITEM',0
+ui_label_button_magic db 'MAGIC',0
+ui_label_button_drink db 'DRINK',0
 ui_label_hp db 'HP:',0
 ui_label_mp db 'MP:',0
 ui_label_xp db 'XP:',0
 ui_label_lvl db 'LV:',0
+ui_selector db '*',0
+ui_space db " ",0
 
-FONT_ASCII_OFFSET equ 34
+
+
+
+ui_selector_x db UI_FIGHT_BUTTONS_X-1
+ui_selector_y db UI_FIGHT_BUTTONS_Y
+
+
+
+
+FONT_ASCII_OFFSET equ 33
 
 
 ui_fight_init_done db FALSE
@@ -26,8 +48,6 @@ ui_enemy_lvl db 0
 
 ui_update: 
     ld a,(screen_manager_current_state)
-    cp SCREEN_LEVEL
-    ret z
     cp SCREEN_FIGHT
     push af
     call z,ui_fight_init
@@ -36,6 +56,10 @@ ui_update:
 
 
 ui_fight_init:
+    
+
+    call ui_fight_update
+
     ld a,(ui_fight_init_done)
     cp TRUE
     ret z
@@ -43,7 +67,37 @@ ui_fight_init:
     ld a,TRUE
     ld (ui_fight_init_done),a
 
-    nextreg $56,17 ;set slot, page
+      ;set slot, page
+
+    ;Top half
+    call ui_draw_selector
+
+    ld l,UI_FIGHT_BUTTONS_X
+    ld h,UI_FIGHT_BUTTONS_Y
+    ld de,ui_label_button_attack
+    call display_string
+    
+    ld l,UI_FIGHT_BUTTONS_X
+    ld h,UI_FIGHT_BUTTONS_Y+UI_BUTTON_HEIGHT
+    ld de,ui_label_button_run
+    call display_string
+
+    ld l,UI_FIGHT_BUTTONS_X
+    ld h,UI_FIGHT_BUTTONS_Y+(UI_BUTTON_HEIGHT*2)
+    ld de,ui_label_button_item
+    call display_string
+
+    ld l,UI_FIGHT_BUTTONS_X+(UI_BUTTON_WIDTH)
+    ld h,UI_FIGHT_BUTTONS_Y+(UI_BUTTON_HEIGHT)
+    ld de,ui_label_button_magic
+    call display_string
+
+    ld l,UI_FIGHT_BUTTONS_X+(UI_BUTTON_WIDTH)
+    ld h,UI_FIGHT_BUTTONS_Y+(UI_BUTTON_HEIGHT*2)
+    ld de,ui_label_button_drink
+    call display_string
+
+    ;Bottom Half of screen:
 
     ;Display enemy texts
     call ui_get_enemy_texts
@@ -54,7 +108,7 @@ ui_fight_init:
     call display_string
     ld l,UI_FIGHT_ENEMY_X+UI_LABELS_SPACING
     ld h,UI_FIGHT_ENEMY_Y
-    ld a,(ui_enemy_hp) ;todo: find a way to copy the single enemy we are fighting to get his details
+    ld a,255 ;todo: find a way to copy the single enemy we are fighting to get his details
     call display_numbers
 
     ;MP
@@ -127,10 +181,25 @@ ui_fight_init:
     ld h,UI_FIGHT_PLAYER_Y+UI_LABELS_ROW_HEIGHT
     ld a,(player_lvl)
     call display_numbers
- 
+   
     ret
 
 
+;HL=yx
+ui_draw_selector:
+   
+    ld hl,(ui_selector_x)
+    ld de,ui_selector
+    call display_string
+    
+    ret
+
+ui_delete_selector:
+    ld hl,(ui_selector_x)
+    ld de,ui_space
+    call display_string
+    BREAKPOINT
+    ret
 
 
 ui_get_enemy_texts:
@@ -160,3 +229,38 @@ uiget_next:
     jp uiget_start
 
 
+
+
+
+ui_fight_update:
+    ld a,(keypressed_W)
+    cp TRUE
+    call z, ui_move_selector_up
+
+    ld a,(keypressed_S)
+    cp TRUE
+    call z,ui_move_selector_down
+    ret
+
+
+
+ui_move_selector_up:
+    ld a,(ui_selector_y)
+    cp UI_FIGHT_BUTTONS_Y
+    ret z
+    dec a
+    call ui_delete_selector
+    ld (ui_selector_y),a
+
+    call ui_draw_selector
+    ret
+ui_move_selector_down:
+    ld a,(ui_selector_y)
+    cp UI_FIGHT_BUTTONS_Y+3 ;3 buttons max column height
+    ret z
+    inc a
+    call ui_delete_selector
+    ld (ui_selector_y),a
+
+    call ui_draw_selector
+    ret

@@ -35,6 +35,8 @@ stack_top db 0
 
 	MMU 6,17
 	org 0xC000
+
+	ds 64,0
 	; incbin "fonts/font1.spr"
 	; incbin "fonts/font2.spr"
 	; incbin "fonts/font3.spr"
@@ -53,7 +55,7 @@ stack_top db 0
 	; incbin "fonts/font16.spr"
 	; ; incbin "fonts/font17.spr"
 	; incbin "fonts/font18.spr" *not mapped same as others (?)
-
+	
 
 
 
