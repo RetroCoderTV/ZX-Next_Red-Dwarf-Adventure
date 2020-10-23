@@ -1,8 +1,5 @@
 game_start: 
 
-	
-
-
 	nextreg $56, 14
 	ld b,SPRITE_COUNT
     ld hl,MAP_ADDRESS
